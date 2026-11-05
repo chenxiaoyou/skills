@@ -1,40 +1,40 @@
-# 飞书云文档规范化
+# Feishu Document Normalization
 
-沿用主技能的全角转半角、中文与英文或数字之间补空格规则，不增加润色、内容重组或视觉美化。
+Apply the main skill's rules for converting fullwidth characters to halfwidth, adding spaces between Chinese text and English or numbers, and adding spaces after punctuation within paragraphs. Do not polish the writing, reorganize content, or change the visual design.
 
-## 目标与读取
+## Identify and Read the Target
 
-- 使用已安装的 `lark-doc` 技能，按阶段阅读其读取、更新及 XML 格式参考。可用 `lark-cli skills read lark-doc` 获取入口；具体参数以本机命令帮助为准。
-- 支持 `/docx/`、`/wiki/` URL 或明确的文档 token，包含这些路径的 doubao.com 链接；按路径识别资源。`/page/` 是应用页面，不按云文档处理。
-- 用户要求规范或修改指定文档时，直接在指定范围写回；若要求只检查、预览或输出建议，则只读并返回差异。不要额外要求逐次确认。
-- 有章节、选区或 block 锚点时保留该范围。要求全文规范时读取全部正文；长文档可按章节处理，并记录覆盖范围。
-- 获取用于编辑的完整 XML 与样式信息，保留同次响应的 `document.content`、`reference_map`、`revision_id` 和 `tips`：
+- Use the installed `lark-doc` skill and read its references for fetching, updating, and XML at the corresponding stage. Run `lark-cli skills read lark-doc` to open the skill entry point; consult local command help for exact arguments.
+- Support `/docx/` and `/wiki/` URLs or an explicit document token, including doubao.com links with these paths. Route by path. `/page/` identifies an application page, not a cloud document.
+- When the user asks to normalize or edit a specified document, write back directly within the requested scope. For checks, previews, or suggestions, only read the document and return a diff. Do not ask for confirmation for each update.
+- Respect any specified section, selection, or block anchor. For normalization of the entire document, read the complete body; process long documents section by section and track coverage.
+- Fetch complete XML and style information for editing. Retain `document.content`, `reference_map`, `revision_id`, and `tips` from the same response:
 
   ```bash
-  lark-cli docs +fetch --doc '文档URL或token' --as user --doc-format xml --detail full
+  lark-cli docs +fetch --doc 'document URL or token' --as user --doc-format xml --detail full
   ```
 
-## 转换与局部更新
+## Conversion and Targeted Updates
 
-- 处理正文中可编辑的文字，包括章节标题、列表、引用及文档原生表格单元格。保留标题层级、段落顺序、列表编号、表格结构、粗体、颜色等样式。
-- 仅转换可见的自然语言文本节点；保留标签、属性、ID、URL、邮箱、代码、公式、@引用和评论。图片、附件、画板、内嵌电子表格、多维表格与同步引用保持原样；不修改引用的源文档。
-- 在同一段落内跨富文本片段判断相邻字符，把字符替换和新增空格落回原有片段，不合并成纯文本。例如：
+- Process editable body text, including section headings, lists, quotes, and native document table cells. Preserve heading levels, paragraph order, list numbering, table structure, bold formatting, colors, and other styles.
+- Convert only visible natural language text nodes. Preserve tags, attributes, IDs, URLs, email addresses, code, formulas, @mentions, and comments. Leave images, attachments, whiteboards, embedded spreadsheets, multidimensional tables, and synced references unchanged; do not modify the source documents of references.
+- Determine adjacent characters across rich text spans within the same paragraph. Apply replacements and inserted spaces to the original spans rather than flattening them into plain text. For example:
 
   ```xml
-  <!-- 转换前 -->
-  <p>使用<b>ＧＰＴ５</b>写３篇《报告》。</p>
-  <!-- 转换后 -->
-  <p>使用 <b>GPT5</b> 写 3 篇&lt;报告&gt;.</p>
+  <!-- Before -->
+  <p>Use <b>ＧＰＴ５</b> to write ３ articles titled《Report》。</p>
+  <!-- After -->
+  <p>Use <b>GPT5</b> to write 3 articles titled&lt; Report&gt; .</p>
   ```
 
-- 先比较转换前后的文本，只写发生变化的内容。不得对序列化后的整份 XML 做全局字符转换；新文本中的 `<`、`>`、`&` 按 XML 规则转义。
-- 简单行内修改可用 `docs +update --command str_replace`，但该命令全文匹配：先确认所有匹配都在授权范围且不涉及受保护内容；局部范围不能依赖它隐式限定。
-- 一个块有多处变化、涉及多个富文本片段或需要精确限定范围时，按 `lark-doc` 的更新参考使用 `block_replace`。保留该块原有结构、样式与资源引用，需要回放时携带原始 `reference_map`；使用读取到的版本作为写入基准。
-- 不用整篇 `overwrite` 完成排版规范化。若某块无法保真局部更新，保留该块并报告未处理范围。
+- Compare the text before and after conversion, and write only changed content. Do not convert characters globally in the serialized XML. Escape `<`, `>`, and `&` in new text according to XML rules.
+- For simple inline changes, use `docs +update --command str_replace`, which matches throughout the document. First confirm that every match is within the authorized scope and does not affect protected content; do not rely on it to implicitly enforce a local scope.
+- For multiple changes in one block, edits across rich text spans, or updates requiring precise scope, use `block_replace` as described in the `lark-doc` update reference. Preserve the block's structure, styles, and resource references. Include the original `reference_map` when replaying references, and use the fetched version as the write baseline.
+- Do not use a full-document `overwrite` for formatting normalization. If a block cannot be updated while preserving its structure and formatting, leave it unchanged and report the unprocessed scope.
 
-## 验证与返回
+## Verify and Report
 
-- 每轮写入后重新 fetch 影响范围，核对文字转换和空格，并检查结构、样式及资源引用；后续修改使用最新 block ID 和版本。版本冲突时重新读取并计算差异。
-- 再按主技能规则检查已处理文本，应无新增修改。原文已符合规则时不写入。
-- 检查更新返回的 `result`、`warnings`、`tips`；部分成功或内容降级不能报告为全部完成。认证或权限错误按 `lark-doc` 路由到 `lark-shared` 处理。
-- 完成后简短返回原文档链接和处理范围；有未处理块或验证未通过时明确说明。只检查模式返回差异摘要，不声称已修改。
+- After each round of writes, fetch the affected scope again to verify text conversion and spacing, and check structure, styles, and resource references. Use the latest block IDs and version for subsequent changes. On a version conflict, read again and recompute the diff.
+- Check the processed text against the main skill's rules again; no further changes should be needed. Do not write when the original text already meets the rules.
+- Inspect `result`, `warnings`, and `tips` in the update response. Do not report full completion for partial success or degraded content. For authentication or permission errors, follow `lark-doc` to the `lark-shared` skill.
+- On completion, briefly return the original document link and processed scope. Clearly identify any unprocessed blocks or failed verification. In check-only mode, return a diff summary without claiming the document was modified.
