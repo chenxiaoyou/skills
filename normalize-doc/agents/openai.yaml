@@ -1,0 +1,4 @@
+interface:
+  display_name: "文字格式规范化"
+  short_description: "规范粘贴文字或飞书云文档：全角转半角，并在中文与英文、数字之间补空格"
+  default_prompt: "请使用 $normalize-doc 规范以下文字或飞书云文档：全角转半角，并在中文与英文、数字之间补空格。"
