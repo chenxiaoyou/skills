@@ -1,6 +1,6 @@
 ---
 name: normalize-doc
-description: "Normalize fullwidth characters to halfwidth, add spaces between Chinese text and adjacent English or numbers, and add spaces after punctuation within paragraphs. Supports pasted text and Feishu Docx/Wiki documents. Use when users request these formatting rules for text or Feishu documents."
+description: "Convert fullwidth characters to halfwidth, add spaces between Chinese and adjacent English or numbers and after punctuation, and prefix headings with blue numbers. Use for pasted text and Feishu Docx/Wiki documents."
 ---
 
 # Text Formatting Normalization
@@ -37,6 +37,12 @@ Apply the following personal typography rules to the provided text or the body o
 - Keep percentage and currency symbols attached to their numbers. For example, when `50%` or `¥100` appears between Chinese words, add spaces around the entire unit.
 - Add one halfwidth space after every body punctuation mark within a paragraph when more content immediately follows. This includes commas, periods, colons, semicolons, exclamation marks, question marks, parentheses, quotation marks, and other punctuation. Apply this after converting fullwidth punctuation, and handle consecutive punctuation marks individually. Do not add a space if whitespace already follows the punctuation or the punctuation is at the end of the paragraph.
 - Do not duplicate existing spaces. Preserve existing line breaks, paragraphs, indentation, and other whitespace; do not merge or remove them.
+
+## Heading Numbers
+
+- Start each heading with a blue section number in Arabic numerals, followed by one regular space. Number sibling headings from `1` in document order and restart under each parent. Use the nearest preceding heading with a smaller level number as the parent. Join levels with dots, as in `1`, `1.1`, `1.2`, `2`.
+- Replace or recolor any existing section-number prefix in place. Keep the heading level, wording, and text styles, including numbers that belong to the title. Retain a correct prefix on subsequent runs.
+- In pasted Markdown, keep the heading syntax and use an inline HTML span for the prefix. For example, `## <span style="color: blue">1.1</span> **Section heading**`.
 
 ## Scope and Output
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "normalize-doc"
   short_description: "Normalize width and spacing in text or Feishu docs"
-  default_prompt: "Use $normalize-doc to normalize the following text or Feishu document: convert fullwidth characters to halfwidth, add spaces between Chinese text and English or numbers, and add spaces after punctuation within paragraphs."
+  default_prompt: "Use $normalize-doc to normalize the width and spacing in the following text or Feishu document and give each heading a blue section number."
