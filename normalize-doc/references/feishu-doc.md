@@ -27,7 +27,7 @@ Apply the main skill's width, spacing, and blue heading-number rules. Preserve t
   <p>Use <b>GPT5</b> to write 3 articles titled&lt; Report&gt; .</p>
   ```
 
-- In each editable `<h1>`–`<h9>` heading, put the number in a blue text span at the start of the heading. For example, `<h2><span text-color="blue">1.1.</span> <b>Section heading</b></h2>`. Replace an existing section-number prefix and remove any native `seq` attribute from the updated heading so it displays a single number. Use `block_replace` to apply the change with the existing title text and inline formatting.
+- In each editable `<h1>`–`<h9>` heading, put the number in a blue text span at the start of the heading. For example, `<h1><span text-color="blue">1.</span> <b>Chapter heading</b></h1>`, `<h2><span text-color="blue">1.1.</span> <b>Section heading</b></h2>`, `<h3><span text-color="blue">1.1.1.</span> <b>Subsection heading</b></h3>`. Replace an existing section-number prefix and remove any native `seq` attribute from the updated heading so it displays a single number. Use `block_replace` to apply the change with the existing title text and inline formatting.
 - Compare the text and heading number styles before and after conversion, and write only changed content. Do not convert characters globally in the serialized XML. Escape `<`, `>`, and `&` in new text according to XML rules.
 - For simple inline changes, use `docs +update --command str_replace`, which matches throughout the document. First confirm that every match is within the authorized scope and does not affect protected content; do not rely on it to implicitly enforce a local scope.
 - For multiple changes in one block, edits across rich text spans, or updates requiring precise scope, use `block_replace` as described in the `lark-doc` update reference. Preserve the block's structure, styles, and resource references. Include the original `reference_map` when replaying references, and use the fetched version as the write baseline.
@@ -36,6 +36,7 @@ Apply the main skill's width, spacing, and blue heading-number rules. Preserve t
 ## Verify and Report
 
 - After each round of writes, fetch the affected scope again to verify text conversion and spacing, and check structure, styles, and resource references. Confirm each affected heading displays a single correctly ordered blue number. Use the latest block IDs and version for subsequent changes. On a version conflict, read again and recompute the diff.
+- A blue span written as `text-color="blue"` reads back as `text-color="rgb(36,91,219)"`; treat that value as blue and do not rewrite it.
 - Check the processed text against the main skill's rules again; no further changes should be needed. Do not write when the original text already meets the rules.
 - Inspect `result`, `warnings`, and `tips` in the update response. Do not report full completion for partial success or degraded content. For authentication or permission errors, follow `lark-doc` to the `lark-shared` skill.
 - On completion, briefly return the original document link and processed scope. Clearly identify any unprocessed blocks or failed verification. In check-only mode, return a diff summary without claiming the document was modified.

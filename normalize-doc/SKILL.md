@@ -40,9 +40,10 @@ Apply the following personal typography rules to the provided text or the body o
 
 ## Heading Numbers
 
-- Start each heading with a blue section number in Arabic numerals, followed by one regular space. Number sibling headings from `1` in document order and restart under each parent. Use the nearest preceding heading with a smaller level number as the parent. Join levels with dots and always end the number with a trailing dot, as in `1.`, `1.1.`, `1.2.`, `2.`.
+- Start each heading with a blue section number in Arabic numerals, followed by one regular space.
+- Use the nearest preceding heading with a smaller level number as the parent; a heading with no such preceding heading is top level. Number top-level headings `1.`, `2.`, ... in document order. Give each heading its parent's number without the trailing dot, plus `.` and its position in document order among all headings sharing that parent regardless of their own level, and always end the number with a trailing dot: `1.`, `1.1.`, `1.1.1.`, `1.2.`, `2.`, `2.1.`. A heading that skips a level still counts under its nearest smaller-level ancestor, so no two headings in a document share a number.
 - Replace or recolor any existing section-number prefix in place. Keep the heading level, wording, and text styles, including numbers that belong to the title. Retain a correct prefix on subsequent runs.
-- In pasted Markdown, keep the heading syntax and use an inline HTML span for the prefix. For example, `## <span style="color: blue">1.1.</span> **Section heading**`.
+- In pasted Markdown, keep the heading syntax and use an inline HTML span for the prefix. For example, `# <span style="color: blue">1.</span> **Chapter heading**`, `## <span style="color: blue">1.1.</span> **Section heading**`, `### <span style="color: blue">1.1.1.</span> **Subsection heading**`. Inline HTML is the only way to color Markdown text; viewers that strip inline styles show the number in the default color.
 
 ## Scope and Output
 
