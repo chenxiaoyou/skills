@@ -36,6 +36,8 @@ Apply the following personal typography rules to the provided text or the body o
 - Treat consecutive letters and digits as a single run. Keep symbols within decimals, version numbers, and dates attached rather than spacing them as body punctuation. Preserve internal structures such as `GPT5`, `iPhone16`, `3.14`, `v2.0`, and `2026-11-05`.
 - Keep percentage and currency symbols attached to their numbers. For example, when `50%` or `¥100` appears between Chinese words, add spaces around the entire unit.
 - Add one halfwidth space after every body punctuation mark within a paragraph when more content immediately follows. This includes commas, periods, colons, semicolons, exclamation marks, question marks, parentheses, quotation marks, and other punctuation. Apply this after converting fullwidth punctuation, and handle consecutive punctuation marks individually. Do not add a space if whitespace already follows the punctuation or the punctuation is at the end of the paragraph.
+- Do not add a space after an apostrophe that joins parts of a word (don't, it's, 1990's).
+- Do not add a space between enclosing punctuation (quotation marks, brackets, parentheses) and adjacent Chinese characters on either side; these marks hug the Chinese text around them. For example, keep `"单向依赖"允许上层直接复用更底层的通用能力` as is, not `" 单向依赖" 允许上层直接复用更底层的通用能力`. Spaces after these marks still apply when Latin letters or digits follow, as in `" Okay! Try again? "`.
 - Do not duplicate existing spaces. Preserve existing line breaks, paragraphs, indentation, and other whitespace; do not merge or remove them.
 
 ## Heading Numbers
@@ -73,3 +75,11 @@ Output: `Version 2 supports Python3.12, progress is 50%, price is ¥99.`
 Input: `Chinese（ＡＢＣ１２３）test。`
 
 Output: `Chinese( ABC123) test.`
+
+Input: `“单向依赖”允许上层直接复用更底层的通用能力`
+
+Output: `"单向依赖"允许上层直接复用更底层的通用能力`
+
+Input: `架构原则：“单向依赖”，上层模块直接复用更底层的通用能力。`
+
+Output: `架构原则: "单向依赖", 上层模块直接复用更底层的通用能力.`
