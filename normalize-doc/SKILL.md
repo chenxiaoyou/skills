@@ -1,6 +1,6 @@
 ---
 name: normalize-doc
-description: "Convert fullwidth characters to halfwidth, add spaces between Chinese and adjacent English or numbers and after punctuation, and prefix headings with blue numbers. Use for pasted text and Feishu Docx/Wiki documents."
+description: "Convert fullwidth characters to halfwidth, normalize spacing between Chinese and adjacent English or numbers and after punctuation, and use native heading numbering in Feishu. Use for pasted text and Feishu Docx/Wiki documents."
 ---
 
 # Text Formatting Normalization
@@ -40,12 +40,11 @@ Apply the following personal typography rules to the provided text or the body o
 - Do not add a space between enclosing punctuation (quotation marks, brackets, parentheses) and adjacent Chinese characters on either side; these marks hug the Chinese text around them. For example, keep `"单向依赖"允许上层直接复用更底层的通用能力` as is, not `" 单向依赖" 允许上层直接复用更底层的通用能力`. Spaces after these marks still apply when Latin letters or digits follow, as in `" Okay! Try again? "`.
 - Do not duplicate existing spaces. Preserve existing line breaks, paragraphs, indentation, and other whitespace; do not merge or remove them.
 
-## Heading Numbers
+## Headings
 
-- Start each heading with a blue section number in Arabic numerals, followed by one regular space.
-- Use the nearest preceding heading with a smaller level number as the parent; a heading with no such preceding heading is top level. Number top-level headings `1.`, `2.`, ... in document order. Give each heading its parent's number without the trailing dot, plus `.` and its position in document order among all headings sharing that parent regardless of their own level, and always end the number with a trailing dot: `1.`, `1.1.`, `1.1.1.`, `1.2.`, `2.`, `2.1.`. A heading that skips a level still counts under its nearest smaller-level ancestor, so no two headings in a document share a number.
-- Replace or recolor any existing section-number prefix in place. Keep the heading level, wording, and text styles, including numbers that belong to the title. Retain a correct prefix on subsequent runs.
-- In pasted Markdown, keep the heading syntax and use an inline HTML span for the prefix. For example, `# <span style="color: blue">1.</span> **Chapter heading**`, `## <span style="color: blue">1.1.</span> **Section heading**`, `### <span style="color: blue">1.1.1.</span> **Subsection heading**`. Inline HTML is the only way to color Markdown text; viewers that strip inline styles show the number in the default color.
+- Preserve heading levels, wording, inline styles, and numbers that belong to the title. Apply the regular width and spacing rules to the heading text.
+- In Feishu, use native automatic numbering for section headings and let Feishu render the labels.
+- In pasted Markdown, keep standard heading syntax and the author's numbering, if present. Remove a clearly identifiable numbering span from an earlier run of this skill together with its separator space. For example, `## <span style="color: blue">1.1.</span> **Section heading**` becomes `## **Section heading**`.
 
 ## Scope and Output
 
